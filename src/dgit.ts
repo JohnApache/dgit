@@ -65,7 +65,8 @@ const dgit = async (
     const options = { url, headers, auth };
     destPath = path.isAbsolute(destPath) ? destPath : path.resolve(process.cwd(), destPath);
 
-    logger(' request repo tree options.', options);
+    logger(' request repo tree options.');
+    logger(JSON.stringify(options, null, 2));
 
     try {
         logger(' loading remote repo tree...');
@@ -136,8 +137,7 @@ const dgit = async (
                         currentCount++;
                         currentSize += node.size;
 
-                        logger(`
-                            write file ${node.path} succeed. 
+                        logger(`write file ${node.path} succeed. 
                             size: [${currentSize}/${totalStatus.size}], 
                             count: [${currentCount}/${totalStatus.count}]`);
 
