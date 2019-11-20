@@ -1,0 +1,71 @@
+{
+  "name": "@dking/dgit",
+  "version": "0.0.1",
+  "description": "@dking/hasaki-cli init application",
+  "bin": {
+    "dgit": "./bin/cmd.js"
+  },
+  "main": "./lib/dgit.js",
+  "keywords": [
+    "dgit",
+    "github download tool"
+  ],
+  "author": "JohnApache",
+  "license": "",
+  "scripts": {
+    "build:ts": "tsc --build",
+    "format": "prettier-eslint 'src/**/*.{js,jsx,ts,tsx}' --write",
+    "lint": "eslint src --ext .jsx --ext .js --ext .tsx --ext .ts --cache --fix",
+    "test:mocha": "nyc --reporter=text mocha --require ts-node/register 'test/**/*.{ts,tsx}' -t 50000",
+    "test:mocha:reporter": "nyc --reporter=lcov --reporter=text mocha --require ts-node/register 'test/**/*.{ts,tsx}' -t 5000 --reporter=mochawesome",
+    "watch:ts": "tsc --watch",
+    "prepublishOnly": "npm run test:mocha && npm run lint && npm run build:ts"
+  },
+  "lint-staged": {
+    "**/*.{jsx,js}": [
+      "prettier-eslint --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.0",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.7.5",
+    "@typescript-eslint/eslint-plugin": "^2.6.0",
+    "@typescript-eslint/parser": "^2.6.0",
+    "chai": "^4.2.0",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-import-resolver-typescript": "^2.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-promise": "^4.1.1",
+    "husky": "^2.3.0",
+    "lint-staged": "^8.1.7",
+    "mocha": "^6.2.0",
+    "mochawesome": "^4.1.0",
+    "nyc": "^14.1.1",
+    "prettier-eslint-cli": "^4.7.1",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.6.4"
+  },
+  "dependencies": {
+    "@types/async": "^3.0.3",
+    "@types/commander": "^2.12.2",
+    "@types/inquirer": "^6.5.0",
+    "@types/ora": "^3.2.0",
+    "@types/progress": "^2.0.3",
+    "@types/request": "^2.48.3",
+    "async": "^3.1.0",
+    "chalk": "^3.0.0",
+    "commander": "^4.0.1",
+    "inquirer": "^7.0.0",
+    "ora": "^4.0.3",
+    "progress": "^2.0.3",
+    "request": "^2.88.0"
+  }
+}
