@@ -57,3 +57,6 @@ export const ParseGithubHttpsLink = (httpsLink: string): GithubLinkInfo => {
         type,
     };
 };
+
+
+export const TextEllipsis = (text: string, maxLen: number): string => (text.length >= maxLen ? `${text.slice(0, maxLen)}...` : text);

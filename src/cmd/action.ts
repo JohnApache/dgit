@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import ProgressBar from 'progress';
 import ora, { Ora } from 'ora';
 import { CommandInfo } from './type';
-import { isHttpsLink, ParseGithubHttpsLink } from './utils';
+import { isHttpsLink, ParseGithubHttpsLink, TextEllipsis } from './utils';
 import { DownloadPrompt, PasswordPrompt } from './prompt';
 import dgit from '../dgit';
 
@@ -71,9 +71,16 @@ const DownloadAction = async (githubLink: string | undefined, cmd: Command & Com
             spinner.succeed(' load remote repo tree succeed! ');
         },
         onResolved(status) {
+            // bar = new ProgressBar(
+            // ` ${chalk.rgb(0, 4, 0).bgRgb(73, 162, 46).bold(' DOWNLOAD ')} |:bar| ${chalk.whiteBright.bold(':current/:total :percent')} ${chalk.grey('elapsed:')} ${chalk.whiteBright.bold(':elapseds')} ${chalk.grey('eta:')} ${chalk.whiteBright.bold(':eta')} ${chalk.grey.underline(':file')}, ${chalk.whiteBright.bold('done')}.`,
+            // {
+            //     total: status.totalCount,
+            //     width: 50,
+            // },
+            // );
             const green = '\u001b[42m \u001b[0m';
             const red = '\u001b[41m \u001b[0m';
-            bar = new ProgressBar(' |:bar| :current/:total :percent elapsed: :elapseds eta: :eta resolved :file', {
+            bar = new ProgressBar(' DOWNLOAD |:bar| :current/:total :percent elapsed: :elapseds eta: :eta :file, done.', {
                 total: status.totalCount,
                 width: 50,
                 complete: green,
@@ -82,7 +89,7 @@ const DownloadAction = async (githubLink: string | undefined, cmd: Command & Com
         },
         onProgress(_, node) {
             bar.tick({
-                file: node.path,
+                file: TextEllipsis(node.path, 30),
             });
         },
     });

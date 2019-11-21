@@ -125,13 +125,15 @@ import dgit from '@dking/dgit';
 ## 注意
 在下载私有仓库的时候需要提供下载权限，此时需要传入额外的参数，方式有两种
 + Basic authentication 
+
     通过传入 用户名 和 密码，来提供下载权限, 当传入用户名，可以不显式提供密码，在没有提供密码时，会单独出现密码提示
 
     ```bash
     $ dgit d https://github.com/JohnApache/hasaki-cli/tree/master/src -d ./abc -u JohnApache
     ```
 + OAuth2 token
-    token 是另一种 github 提供的权限认证的方式。
+
+    Token 是另一种 github 提供的权限认证的方式。
 
     设置token方法 ，就位于Github Settings -> Developer settings -> Personal access tokens
 

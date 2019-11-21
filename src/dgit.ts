@@ -162,6 +162,7 @@ const dgit = async (
                     },
                     onRetry() {
                         logger(` request ${url} failed. Retrying...`);
+                        onRetry && onRetry();
                     },
                 },
             );

@@ -20,7 +20,7 @@
 - [English](README.en_US.md)
 - [简体中文](README.md)
 
-> Digit is a portable tool for downloading the specified directory or file of GitHub Repo. It can be used as a command line for global installation on the terminal, or as a node module. This tool does not rely on the local git, can directly download the specified directory file, reduce the traffic consumption, and is very suitable for scenarios where you want to download large projects, and can directly download the content you need.
+> Dgit is a portable tool for downloading the specified directory or file of GitHub Repo. It can be used as a command line for global installation on the terminal, or as a node module. This tool does not rely on the local git, can directly download the specified directory file, reduce the traffic consumption, and is very suitable for scenarios where you want to download large projects, and can directly download the content you need.
 
 - [Install](#install)
 - [Usage](#usage)
@@ -127,11 +127,13 @@ import dgit from '@dking/dgit';
 ## TIPS
 When downloading the private repo, you need to provide download permission. At this time, you need to pass in additional parameters in two ways
 + Basic authentication 
+
     Download permission is provided by passing in user name and password. When passing in user name, password can not be provided explicitly. When password is not provided, password input option will appear password prompt;
     ```bash
     $ dgit d https://github.com/JohnApache/hasaki-cli/tree/master/src -d ./abc -u JohnApache
     ```
 + OAuth2 token
+
     Token is another way of authority authentication provided by GitHub.
 
     Set the token method, which is located in Github Settings -> Developer settings -> Personal access tokens
