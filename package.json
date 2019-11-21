@@ -1,11 +1,12 @@
 {
   "name": "@dking/dgit",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "@dking/hasaki-cli init application",
   "bin": {
     "dgit": "./bin/cmd.js"
   },
   "main": "./lib/dgit.js",
+  "types": "./lib/dgit.d.ts",
   "keywords": [
     "dgit",
     "github download tool"
