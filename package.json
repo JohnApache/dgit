@@ -16,8 +16,8 @@
     "build:ts": "tsc --build",
     "format": "prettier-eslint 'src/**/*.{js,jsx,ts,tsx}' --write",
     "lint": "eslint src --ext .jsx --ext .js --ext .tsx --ext .ts --cache --fix",
-    "test:mocha": "nyc --reporter=text mocha --require ts-node/register 'test/**/*.{ts,tsx}' -t 10000",
-    "test:mocha:reporter": "nyc --reporter=lcov --reporter=text mocha --require ts-node/register 'test/**/*.{ts,tsx}' -t 10000 --reporter=mochawesome",
+    "test:mocha": "nyc --reporter=text mocha --require ts-node/register 'test/**/*.{ts,tsx}' -t 60000",
+    "test:mocha:reporter": "nyc --reporter=lcov --reporter=text mocha --require ts-node/register 'test/**/*.{ts,tsx}' -t 60000 --reporter=mochawesome",
     "watch:ts": "tsc --watch",
     "prepublishOnly": "npm run test:mocha && npm run lint && npm run build:ts"
   },
