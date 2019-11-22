@@ -44,9 +44,12 @@ export const ParseGithubHttpsLink = (httpsLink: string): GithubLinkInfo => {
         type = nextLink.slice(0, index);
         nextLink = nextLink.slice(type.length + 1);
         index = nextLink.indexOf('/');
-        if (index === -1) throw new Error('invalid github address.');
-        ref = nextLink.slice(0, index);
-        relativePath = nextLink.slice(ref.length + 1);
+        if (index === -1) {
+            ref = nextLink.slice(0) || 'master';
+        } else {
+            ref = nextLink.slice(0, index);
+            relativePath = nextLink.slice(ref.length + 1);
+        }
     }
 
     return {

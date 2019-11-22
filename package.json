@@ -1,6 +1,6 @@
 {
   "name": "@dking/dgit",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "@dking/hasaki-cli init application",
   "bin": {
     "dgit": "./bin/cmd.js"
@@ -12,7 +12,7 @@
     "github download tool"
   ],
   "author": "JohnApache",
-  "license": "",
+  "license": "MIT",
   "scripts": {
     "build:ts": "tsc --build",
     "format": "prettier-eslint 'src/**/*.{js,jsx,ts,tsx}' --write",
