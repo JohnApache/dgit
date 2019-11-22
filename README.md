@@ -95,6 +95,10 @@ import dgit from '@dking/dgit';
         token: ''; // git token 是另一种登录方式的可配置参数，用于下载私有仓库.
     }
 
+    const githubLinkOption = {
+        githubLink: 'https://github.com/JohnApache/hasaki-cli/blob/master/PLAN.txt', // 也可以直接指定github 需要下载路径的地址
+    }
+
     const destPath = path.resolve(__dirname, './aaa'); // 目标下载路径
 
     const dgitOptions = {
@@ -119,7 +123,15 @@ import dgit from '@dking/dgit';
             dgitOptions,
             hooks,
         );
-        console.log('download succeed');
+        console.log('repoOption download succeed.');
+
+        await dgit(
+            githubLinkOption,
+            destPath,
+            dgitOptions,
+            hooks,
+        );
+        console.log('githubLinkOption download succeed.');
     })()
     ```    
 ## 注意

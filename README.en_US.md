@@ -96,6 +96,11 @@ import dgit from '@dking/dgit';
         token: ''; // Git token is another configurable parameter of login mode.
     }
 
+    const githubLinkOption = {
+        githubLink: 'https://github.com/JohnApache/hasaki-cli/blob/master/PLAN.txt',
+        // You can also directly specify the download path address of gitHub
+    }
+
     const destPath = path.resolve(__dirname, './aaa'); // Specify the file output directory
 
     const dgitOptions = {
@@ -120,7 +125,15 @@ import dgit from '@dking/dgit';
             dgitOptions,
             hooks,
         );
-        console.log('download succeed');
+        console.log('repoOption download succeed.');
+
+        await dgit(
+            githubLinkOption,
+            destPath,
+            dgitOptions,
+            hooks,
+        );
+        console.log('githubLinkOption download succeed.');
     })()
     ``` 
 
