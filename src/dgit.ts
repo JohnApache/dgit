@@ -7,8 +7,10 @@ import { requestGetPromise, requestOnStream } from './request';
 import {
     DgitGlobalOption, RepoOptionType, RepoTreeNode, DgitLifeCycle, DgitLoadGitTree,
 } from './type';
+import { ParseGithubHttpsLink, isHttpsLink } from './cmd/utils';
 
 const UserAgent = '@dking/dgit';
+
 
 const dgit = async (
     repoOption: RepoOptionType,
@@ -17,8 +19,24 @@ const dgit = async (
     hooks?: DgitLifeCycle & DgitLoadGitTree,
 ): Promise<void> => {
     const {
-        owner, repoName, ref, relativePath, username, password, token,
+        username, password, token, githubLink,
     } = repoOption;
+
+    let {
+        owner, repoName, ref = 'master', relativePath = '.',
+    } = repoOption;
+
+    if (githubLink && isHttpsLink(githubLink)) {
+        const parseResult = ParseGithubHttpsLink(githubLink);
+        owner = parseResult.owner;
+        repoName = parseResult.repoName;
+        ref = parseResult.ref;
+        relativePath = parseResult.relativePath;
+    }
+
+    if (!owner || !repoName) {
+        throw new Error('invalid repo option.');
+    }
 
     const logger = createLogger(dgitOptions);
 
@@ -27,6 +45,8 @@ const dgit = async (
         logger('parallelLimit value is invalid.');
         parallelLimit = 10;
     }
+
+    parallelLimit > 100 && (parallelLimit = 100);
 
     const {
         onSuccess,

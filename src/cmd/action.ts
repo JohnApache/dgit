@@ -1,10 +1,12 @@
 import { Command } from 'commander';
 import ProgressBar from 'progress';
 import ora, { Ora } from 'ora';
+import { ParseGithubHttpsLink, TextEllipsis, isHttpsLink } from './utils';
 import { CommandInfo } from './type';
-import { isHttpsLink, ParseGithubHttpsLink, TextEllipsis } from './utils';
+
 import { DownloadPrompt, PasswordPrompt } from './prompt';
 import dgit from '../dgit';
+
 
 const DownloadAction = async (githubLink: string | undefined, cmd: Command & CommandInfo): Promise<any> => {
     let {

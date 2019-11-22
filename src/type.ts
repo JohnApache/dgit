@@ -5,15 +5,18 @@ export interface DgitGlobalOption {
     logPrefix?: string;
 }
 
-
-export interface RepoOptionType {
-    owner: string; // github owner
-    repoName: string; // repository name
-    ref: string; // branch,  commit hash, tag.
-    relativePath: string; // download relative path
+export interface PrivateOption {
     username?: string;
     password?: string;
     token?: string;
+}
+
+export interface RepoOptionType extends PrivateOption{
+    owner?: string; // github owner
+    repoName?: string; // repository name
+    ref?: string; // branch,  commit hash, tag.
+    relativePath?: string; // download relative path
+    githubLink?: string;
 }
 
 export interface RepoTreeNode {
@@ -42,4 +45,13 @@ export interface ProgressStatus {
     currentCount: number;
     totalCount: number;
     totalSize: number;
+}
+
+
+export interface GithubLinkInfo {
+    owner: string;
+    repoName: string;
+    ref: string;
+    relativePath: string;
+    type: string;
 }

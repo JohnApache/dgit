@@ -6,11 +6,15 @@ import dgit from '../src/dgit';
 
 describe('dgit功能测试', () => {
     const target = path.resolve(__dirname, '../PLAN.txt');
-    after(() => {
+
+    const deleteTarget = () => {
         if (fs.existsSync(target)) {
             fs.unlinkSync(target);
         }
-    });
+    };
+    beforeEach(deleteTarget);
+    after(deleteTarget);
+
     it('dgit 能拉取远端git指定目录代码', async () => {
         await dgit(
             {
@@ -22,6 +26,24 @@ describe('dgit功能测试', () => {
             './',
             {
                 log: true,
+            },
+            {
+                onSuccess() {
+                    expect(fs.existsSync(target)).to.be.ok;
+                },
+            },
+        );
+    });
+
+    it('dgit 能直接使用githubLink方式拉取远端git指定目录代码', async () => {
+        await dgit(
+            {
+                githubLink: 'https://github.com/JohnApache/hasaki-cli/blob/master/PLAN.txt',
+            },
+            './',
+            {
+                log: true,
+                parallelLimit: 1,
             },
             {
                 onSuccess() {
