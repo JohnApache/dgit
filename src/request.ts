@@ -100,10 +100,11 @@ export const requestOnStream = (
                 onFinish && onFinish();
             })
             .pipe(ws);
-
-        ws.on('finish', () => {
-            onSuccess && onSuccess();
-        });
     };
+
+    ws.on('finish', () => {
+        onSuccess && onSuccess();
+    });
+
     fn(maxRetryCount);
 };

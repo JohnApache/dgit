@@ -140,7 +140,19 @@ const dgit = async (
 
         async.eachLimit(includeTreeNodeList, parallelLimit, (node, callback) => {
             const downloadUrl = getDownloadUrl(node.path);
-            const targetPath = path.resolve(destPath, node.path);
+
+            const rPath = path.resolve(destPath, relativePath);
+            const tPath = path.resolve(destPath, node.path);
+            const root = path.resolve(destPath, '.');
+
+            let targetPath: string;
+            if (rPath === tPath) {
+                targetPath = path.resolve(destPath, path.basename(tPath));
+            } else {
+                targetPath = tPath.replace(rPath, root);
+            }
+
+            logger(node.path, relativePath, targetPath);
 
             if (!fs.existsSync(path.dirname(targetPath))) {
                 fs.mkdirSync(path.dirname(targetPath), { recursive: true });
