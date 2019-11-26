@@ -7,7 +7,7 @@ import { requestGetPromise, requestOnStream } from './request';
 import {
     DgitGlobalOption, RepoOptionType, RepoTreeNode, DgitLifeCycle, DgitLoadGitTree,
 } from './type';
-import { ParseGithubHttpsLink, isHttpsLink } from './cmd/utils';
+import { ParseGithubHttpsLink, isHttpsLink, MakeDirs } from './cmd/utils';
 
 const UserAgent = '@dking/dgit';
 
@@ -155,7 +155,7 @@ const dgit = async (
             logger(node.path, relativePath, targetPath);
 
             if (!fs.existsSync(path.dirname(targetPath))) {
-                fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+                MakeDirs(path.dirname(targetPath));
             }
 
             const ws = fs.createWriteStream(targetPath);

@@ -63,3 +63,21 @@ export const ParseGithubHttpsLink = (httpsLink: string): GithubLinkInfo => {
 
 
 export const TextEllipsis = (text: string, maxLen: number): string => (text.length >= maxLen ? `${text.slice(0, maxLen)}...` : text);
+
+
+export const MakeDirs = (dirs: string): void => {
+    const mkdirs = (dir: string, callback?: () => void) => {
+        if (fs.existsSync(dir)) {
+            callback && callback();
+            return;
+        }
+
+        mkdirs(path.dirname(dir), () => {
+            fs.mkdirSync(dir);
+            callback && callback();
+        });
+    };
+
+    if (fs.existsSync(dirs)) return;
+    mkdirs(dirs);
+};
