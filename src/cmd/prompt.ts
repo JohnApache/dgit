@@ -3,8 +3,9 @@ import { DownloadPromptInfo, PasswordPromptInfo } from './type';
 
 export const CreatePrompt = (questions: Array<Question>): Promise<any> => inquirer.prompt(questions);
 
-
-export const DownloadPrompt = async (currentInfo: DownloadPromptInfo): Promise<DownloadPromptInfo> => {
+export const DownloadPrompt = async (
+    currentInfo: DownloadPromptInfo,
+): Promise<DownloadPromptInfo> => {
     if (
         currentInfo.owner
         && currentInfo.repoName

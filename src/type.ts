@@ -11,7 +11,7 @@ export interface PrivateOption {
     token?: string;
 }
 
-export interface RepoOptionType extends PrivateOption{
+export interface RepoOptionType extends PrivateOption {
     owner?: string; // github owner
     repoName?: string; // repository name
     ref?: string; // branch,  commit hash, tag.
@@ -46,7 +46,6 @@ export interface ProgressStatus {
     totalCount: number;
     totalSize: number;
 }
-
 
 export interface GithubLinkInfo {
     owner: string;

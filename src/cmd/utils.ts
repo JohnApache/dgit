@@ -3,10 +3,11 @@ import path from 'path';
 import { PackageInfo, GithubLinkInfo } from './type';
 
 export const GetPackageInfo = (): PackageInfo => {
-    const buffer = fs.readFileSync(path.resolve(__dirname, '../../package.json'));
+    const buffer = fs.readFileSync(
+        path.resolve(__dirname, '../../package.json'),
+    );
     return JSON.parse(buffer.toString());
 };
-
 
 export const GITHUB_ADDRESS = 'https://github.com/';
 export const isHttpsLink = (link: string) => link.trim().startsWith(GITHUB_ADDRESS);
@@ -61,9 +62,7 @@ export const ParseGithubHttpsLink = (httpsLink: string): GithubLinkInfo => {
     };
 };
 
-
 export const TextEllipsis = (text: string, maxLen: number): string => (text.length >= maxLen ? `${text.slice(0, maxLen)}...` : text);
-
 
 export const MakeDirs = (dirs: string): void => {
     const mkdirs = (dir: string, callback?: () => void) => {

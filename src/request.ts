@@ -9,10 +9,7 @@ const requestGet = (
     hooks?: DgitLifeCycle,
 ): void => {
     const {
-        onSuccess,
-        onError,
-        onFinish,
-        onRetry,
+        onSuccess, onError, onFinish, onRetry,
     } = hooks || {};
 
     request.get(options, (err, _, body) => {
@@ -37,15 +34,10 @@ export const requestGetPromise = (
     dgitOptions: DgitGlobalOption,
     hooks?: DgitLifeCycle,
 ): Promise<any> => new Promise((resolve, reject) => {
-    const {
-        maxRetryCount = 5,
-    } = dgitOptions;
+    const { maxRetryCount = 5 } = dgitOptions;
 
     const {
-        onSuccess,
-        onError,
-        onFinish,
-        onRetry,
+        onSuccess, onError, onFinish, onRetry,
     } = hooks || {};
 
     const newHooks: DgitLifeCycle = {
@@ -61,13 +53,8 @@ export const requestGetPromise = (
         onRetry,
     };
 
-    requestGet(
-        options,
-        maxRetryCount,
-        newHooks,
-    );
+    requestGet(options, maxRetryCount, newHooks);
 });
-
 
 export const requestOnStream = (
     url: string,
@@ -75,15 +62,10 @@ export const requestOnStream = (
     dgitOptions: DgitGlobalOption,
     hooks?: DgitLifeCycle,
 ) => {
-    const {
-        maxRetryCount = 5,
-    } = dgitOptions;
+    const { maxRetryCount = 5 } = dgitOptions;
 
     const {
-        onSuccess,
-        onError,
-        onFinish,
-        onRetry,
+        onSuccess, onError, onFinish, onRetry,
     } = hooks || {};
 
     const fn = (retryCount: number): void => {

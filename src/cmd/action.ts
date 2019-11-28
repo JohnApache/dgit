@@ -7,8 +7,10 @@ import { CommandInfo } from './type';
 import { DownloadPrompt, PasswordPrompt } from './prompt';
 import dgit from '../dgit';
 
-
-const DownloadAction = async (githubLink: string | undefined, cmd: Command & CommandInfo): Promise<any> => {
+const DownloadAction = async (
+    githubLink: string | undefined,
+    cmd: Command & CommandInfo,
+): Promise<any> => {
     let {
         ref = '',
         dest = '',
@@ -18,11 +20,7 @@ const DownloadAction = async (githubLink: string | undefined, cmd: Command & Com
         password,
     } = cmd;
 
-    const {
-        parallelLimit = '',
-        username,
-        token,
-    } = cmd;
+    const { parallelLimit = '', username, token } = cmd;
 
     if (githubLink && isHttpsLink(githubLink)) {
         const parseResult = ParseGithubHttpsLink(githubLink);
@@ -54,40 +52,48 @@ const DownloadAction = async (githubLink: string | undefined, cmd: Command & Com
     const spinner: Ora = ora(' loading remote repo tree...');
     let bar: ProgressBar;
 
-    await dgit({
-        ref,
-        owner,
-        repoName,
-        relativePath,
-        username,
-        password,
-        token,
-    }, dest, {
-        log: false,
-        parallelLimit: Number(parallelLimit.trim()),
-    }, {
-        beforeLoadTree() {
-            spinner.start();
+    await dgit(
+        {
+            ref,
+            owner,
+            repoName,
+            relativePath,
+            username,
+            password,
+            token,
         },
-        afterLoadTree() {
-            spinner.succeed(' load remote repo tree succeed! ');
+        dest,
+        {
+            log: false,
+            parallelLimit: Number(parallelLimit.trim()),
         },
-        onResolved(status) {
-            const green = '\u001b[42m \u001b[0m';
-            const red = '\u001b[41m \u001b[0m';
-            bar = new ProgressBar(' DOWNLOAD |:bar| :current/:total :percent elapsed: :elapseds eta: :eta :file, done.', {
-                total: status.totalCount,
-                width: 50,
-                complete: green,
-                incomplete: red,
-            });
+        {
+            beforeLoadTree() {
+                spinner.start();
+            },
+            afterLoadTree() {
+                spinner.succeed(' load remote repo tree succeed! ');
+            },
+            onResolved(status) {
+                const green = '\u001b[42m \u001b[0m';
+                const red = '\u001b[41m \u001b[0m';
+                bar = new ProgressBar(
+                    ' DOWNLOAD |:bar| :current/:total :percent elapsed: :elapseds eta: :eta :file, done.',
+                    {
+                        total: status.totalCount,
+                        width: 50,
+                        complete: green,
+                        incomplete: red,
+                    },
+                );
+            },
+            onProgress(_, node) {
+                bar.tick({
+                    file: TextEllipsis(node.path, 30),
+                });
+            },
         },
-        onProgress(_, node) {
-            bar.tick({
-                file: TextEllipsis(node.path, 30),
-            });
-        },
-    });
+    );
 
     spinner.succeed(' download all files succeed!');
 };
