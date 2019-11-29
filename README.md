@@ -158,7 +158,7 @@ import dgit from '@dking/dgit';
     ```
 
 ## 建议
-欢迎创建issue 或者 pr [here](https://github.com/JohnApache/egg-kafka-node/issues).
+欢迎创建issue 或者 pr [here](https://github.com/JohnApache/dgit/issues).
 
 ## License
 

@@ -160,7 +160,7 @@ When downloading the private repo, you need to provide download permission. At t
     ```
 
 ## Questions
-Please open an issue [here](https://github.com/JohnApache/egg-kafka-node/issues).
+Please open an issue [here](https://github.com/JohnApache/dgit/issues).
 
 ## License
 
