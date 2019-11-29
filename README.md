@@ -79,6 +79,8 @@ import dgit from '@dking/dgit';
         * -u, --username, <username>      指定git用户名, 在下载私有仓库时需要的配置参数.
         * -p --password, <password>       指定git密码, 同username 一起使用，在下载私有仓库时需要的配置参数.
         * -t --token, <token>             git token 是另一种登录方式的可配置参数，用于下载私有仓库.
+        * -e --exclude, <relativePath,...,relativePath>  指定当前下载目录需要排除的文件或目录路径集合.
+        * -i --include, <relativePath,...,relativePath>  指定当前排除的文件路径集合中需要重新包含的文件或目录集合.
         * -h, --help                      帮助文档
 
 + 局部安装，作为模块使用时，可配置参数
@@ -102,10 +104,12 @@ import dgit from '@dking/dgit';
     const destPath = path.resolve(__dirname, './aaa'); // 目标下载路径
 
     const dgitOptions = {
-        maxRetryCount: 3; // 网络问题下载失败时尝试最大重新下载次数
-        parallelLimit: 10; // 并行下载个数
-        log: false; // 是否开启内部日志
-        logSuffix: ''; // 日志前缀
+        maxRetryCount: 3, // 网络问题下载失败时尝试最大重新下载次数
+        parallelLimit: 10, // 并行下载个数
+        log: false, // 是否开启内部日志
+        logSuffix: '', // 日志前缀
+        exclude: [], // 需要排除的文件路径,
+        include: [], // 需要包含的文件路径
     }
 
     const hooks = {

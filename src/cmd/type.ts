@@ -13,6 +13,8 @@ export interface CommandInfo {
     username?: string;
     password?: string;
     token?: string;
+    exclude?: string;
+    include?: string;
 }
 
 export interface DownloadPromptInfo {

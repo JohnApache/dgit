@@ -62,7 +62,7 @@ export const DownloadPrompt = async (
             message: 'input github relative path.',
         },
         {
-            type: 'owner',
+            type: 'input',
             name: 'dest',
             when() {
                 return !currentInfo.dest;
@@ -70,6 +70,7 @@ export const DownloadPrompt = async (
             validate(input: string) {
                 return input && input.length > 0;
             },
+            default: '.',
             message: 'input template output dest path.',
         },
     ];

@@ -37,6 +37,14 @@ program
         '-t --token, <token>',
         'specified git account personal access token.',
     )
+    .option(
+        '-e --exclude, <relativePath,...,relativePath>',
+        'indicates which file paths need to be excluded in the current directory.',
+    )
+    .option(
+        '-i --include, <relativePath,...,relativePath>',
+        'indicates which files need to be included in the exclusion file list.',
+    )
     .alias('d')
     .description(
         'download the file with the specified path of the remote repo.',
@@ -44,7 +52,7 @@ program
     .action(DownloadAction);
 
 program.on('command:*', (cmdObj = []) => {
-    const [cmd, envs] = cmdObj;
+    const [cmd] = cmdObj;
     if (cmd) {
         program.outputHelp();
         UnknownCommand(cmd);

@@ -29,6 +29,9 @@ describe('dgit功能测试', () => {
     const target2 = path.resolve(basePath, './.eslintignore');
     const target3 = path.resolve(basePath, './webpack.config.js');
     const target4 = path.resolve(basePath, './config/webpack.base.js');
+    const target5 = path.resolve(basePath, './dgit.ts');
+    const target6 = path.resolve(basePath, './cmd/main.ts');
+    const target7 = path.resolve(basePath, './cmd/action.ts');
 
     const deleteTarget = (): Promise<void> => new Promise((resolve) => {
         if (fs.existsSync(basePath)) {
@@ -104,12 +107,38 @@ describe('dgit功能测试', () => {
             './testDir',
             {
                 log: true,
-                parallelLimit: 1,
+                parallelLimit: 2,
             },
             {
                 onSuccess() {
                     expect(fs.existsSync(target3)).to.be.ok;
                     expect(fs.existsSync(target4)).to.be.ok;
+                },
+            },
+        );
+    });
+
+    it('dgit 能接受exclude include 参数筛选目标目录文件', async () => {
+        await dgit(
+            {
+                githubLink: 'https://github.com/JohnApache/dgit/tree/master/src',
+            },
+            './testDir',
+            {
+                log: true,
+                parallelLimit: 2,
+                exclude: [
+                    'cmd',
+                ],
+                include: [
+                    'cmd/main.ts',
+                ],
+            },
+            {
+                onSuccess() {
+                    expect(fs.existsSync(target5)).to.be.ok;
+                    expect(fs.existsSync(target6)).to.be.ok;
+                    expect(fs.existsSync(target7)).to.not.be.ok;
                 },
             },
         );

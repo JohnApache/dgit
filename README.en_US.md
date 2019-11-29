@@ -80,6 +80,8 @@ import dgit from '@dking/dgit';
         * -u, --username, <username>      Specify git account name, configuration parameters required when downloading private repo.
         * -p --password, <password>       Specify the git account password, which is used with username, and the configuration parameters required when downloading the private repo.
         * -t --token, <token>             Git token is another configurable parameter of login mode, which is used to download private repo.
+        * -e --exclude, <relativePath,...,relativePath>  Specifies the collection of files or directory paths that need to be excluded for the current download directory.
+        * -i --include, <relativePath,...,relativePath>  Specifies the collection of files or directories that need to be included again in the currently excluded file path collection.
         * -h, --help                      Output usage information
 
 + Local installation, configurable parameters when used as a module   
@@ -104,10 +106,12 @@ import dgit from '@dking/dgit';
     const destPath = path.resolve(__dirname, './aaa'); // Specify the file output directory
 
     const dgitOptions = {
-        maxRetryCount: 3; // The maximum number of attempts to download again when the download fails due to network problems
-        parallelLimit: 10; // Number of parallel downloads
-        log: false; // Open internal log
-        logSuffix: ''; // Log output prefix
+        maxRetryCount: 3, // The maximum number of attempts to download again when the download fails due to network problems
+        parallelLimit: 10, // Number of parallel downloads
+        log: false, // Open internal log
+        logSuffix: '', // Log output prefix
+        exclude: [], // excluded paths,
+        include: [], // include paths
     }
 
     const hooks = {

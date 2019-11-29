@@ -20,6 +20,11 @@ const DownloadAction = async (
         password,
     } = cmd;
 
+    const {
+        exclude = '',
+        include = '',
+    } = cmd;
+
     const { parallelLimit = '', username, token } = cmd;
 
     if (githubLink && isHttpsLink(githubLink)) {
@@ -49,6 +54,9 @@ const DownloadAction = async (
     repoName = answer.repoName;
     relativePath = answer.relativePath;
 
+    const excludeList = exclude.split(',').filter(Boolean);
+    const includeList = include.split(',').filter(Boolean);
+
     const spinner: Ora = ora(' loading remote repo tree...');
     let bar: ProgressBar;
 
@@ -66,6 +74,8 @@ const DownloadAction = async (
         {
             log: false,
             parallelLimit: Number(parallelLimit.trim()),
+            exclude: excludeList,
+            include: includeList,
         },
         {
             beforeLoadTree() {

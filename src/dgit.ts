@@ -43,6 +43,8 @@ const dgit = async (
 
     const logger = createLogger(dgitOptions);
 
+    const { exclude = [], include = [] } = dgitOptions || {};
+
     let { parallelLimit = 10 } = dgitOptions || {};
     if (!parallelLimit || parallelLimit <= 0) {
         logger('parallelLimit value is invalid.');
@@ -113,12 +115,22 @@ const dgit = async (
         }
 
         const treeNodeList: RepoTreeNode[] = result.tree;
-        const includeTreeNodeList = treeNodeList.filter(
-            (node) => path
-                .resolve(__dirname, node.path)
-                .startsWith(path.resolve(__dirname, relativePath))
-                && node.type === 'blob',
-        );
+        const includeTreeNodeList = treeNodeList.filter((node) => {
+            const nPath = path.resolve(__dirname, node.path);
+            const rPath = path.resolve(__dirname, relativePath);
+            if (!nPath.startsWith(rPath) || node.type !== 'blob') {
+                return false;
+            }
+            if (
+                exclude.some((v) => nPath.startsWith(path.resolve(rPath, v)))
+                && include.every(
+                    (v) => !nPath.startsWith(path.resolve(rPath, v)),
+                )
+            ) {
+                return false;
+            }
+            return true;
+        });
 
         if (includeTreeNodeList.length <= 0) {
             throw new Error(`404 repo ${relativePath} not found!`);

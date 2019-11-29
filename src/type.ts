@@ -1,8 +1,12 @@
+export type GithubRelativePath = string;
+
 export interface DgitGlobalOption {
     maxRetryCount?: number;
     parallelLimit?: number;
     log?: boolean;
     logPrefix?: string;
+    exclude?: GithubRelativePath[];
+    include?: GithubRelativePath[];
 }
 
 export interface PrivateOption {
