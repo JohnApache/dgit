@@ -23,6 +23,8 @@ const DownloadAction = async (
     const {
         exclude = '',
         include = '',
+        log = false,
+        logPrefix = '[dgit-logger]',
     } = cmd;
 
     const { parallelLimit = '', username, token } = cmd;
@@ -60,52 +62,59 @@ const DownloadAction = async (
     const spinner: Ora = ora(' loading remote repo tree...');
     let bar: ProgressBar;
 
-    await dgit(
-        {
-            ref,
-            owner,
-            repoName,
-            relativePath,
-            username,
-            password,
-            token,
-        },
-        dest,
-        {
-            log: false,
-            parallelLimit: Number(parallelLimit.trim()),
-            exclude: excludeList,
-            include: includeList,
-        },
-        {
-            beforeLoadTree() {
-                spinner.start();
+    try {
+        await dgit(
+            {
+                ref,
+                owner,
+                repoName,
+                relativePath,
+                username,
+                password,
+                token,
             },
-            afterLoadTree() {
-                spinner.succeed(' load remote repo tree succeed! ');
+            dest,
+            {
+                log,
+                logPrefix,
+                parallelLimit: Number(parallelLimit.trim()),
+                exclude: excludeList,
+                include: includeList,
             },
-            onResolved(status) {
-                const green = '\u001b[42m \u001b[0m';
-                const red = '\u001b[41m \u001b[0m';
-                bar = new ProgressBar(
-                    ' DOWNLOAD |:bar| :current/:total :percent elapsed: :elapseds eta: :eta :file, done.',
-                    {
-                        total: status.totalCount,
-                        width: 50,
-                        complete: green,
-                        incomplete: red,
-                    },
-                );
+            {
+                beforeLoadTree() {
+                    spinner.start();
+                },
+                afterLoadTree() {
+                    spinner.succeed(' load remote repo tree succeed! ');
+                },
+                onResolved(status) {
+                    if (log) return;
+                    const green = '\u001b[42m \u001b[0m';
+                    const red = '\u001b[41m \u001b[0m';
+                    bar = new ProgressBar(
+                        ' DOWNLOAD |:bar| :current/:total :percent elapsed: :elapseds eta: :eta :file, done.',
+                        {
+                            total: status.totalCount,
+                            width: 50,
+                            complete: green,
+                            incomplete: red,
+                        },
+                    );
+                    bar.update(0);
+                },
+                onProgress(_, node) {
+                    if (log) return;
+                    bar.tick({
+                        file: TextEllipsis(node.path, 30),
+                    });
+                },
             },
-            onProgress(_, node) {
-                bar.tick({
-                    file: TextEllipsis(node.path, 30),
-                });
-            },
-        },
-    );
-
-    spinner.succeed(' download all files succeed!');
+        );
+        spinner.succeed(' download all files succeed!');
+    } catch (error) {
+        console.error(error);
+    }
 };
 
 export default DownloadAction;

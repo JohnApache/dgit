@@ -5,3 +5,4 @@ export declare const isHttpsLink: (link: string) => boolean;
 export declare const ParseGithubHttpsLink: (httpsLink: string) => GithubLinkInfo;
 export declare const TextEllipsis: (text: string, maxLen: number) => string;
 export declare const MakeDirs: (dirs: string) => void;
+export declare const AddExtraRandomQs: (origin: string) => string;

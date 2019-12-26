@@ -45,6 +45,8 @@ program
         '-i --include, <relativePath,...,relativePath>',
         'indicates which files need to be included in the exclusion file list.',
     )
+    .option('--log', 'output dgit internal log details.')
+    .option('--log-prefix, <log>', 'dgit internal log prefix.')
     .alias('d')
     .description(
         'download the file with the specified path of the remote repo.',

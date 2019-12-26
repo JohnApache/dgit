@@ -9,6 +9,6 @@ export const createLogger = (option?: DgitGlobalOption) => (
         const prefix = option
             ? option.logPrefix || DEFAULT_PREFIX
             : DEFAULT_PREFIX;
-        console.log(prefix, ...message);
+        console.log(prefix, ...message, '\n');
     }
 };

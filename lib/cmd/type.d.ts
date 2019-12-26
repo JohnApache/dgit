@@ -14,6 +14,8 @@ export interface CommandInfo {
     token?: string;
     exclude?: string;
     include?: string;
+    log?: boolean;
+    logPrefix?: string;
 }
 export interface DownloadPromptInfo {
     dest: string;

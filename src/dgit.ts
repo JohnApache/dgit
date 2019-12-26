@@ -123,9 +123,7 @@ const dgit = async (
             }
             if (
                 exclude.some((v) => nPath.startsWith(path.resolve(rPath, v)))
-                && include.every(
-                    (v) => !nPath.startsWith(path.resolve(rPath, v)),
-                )
+                && include.every((v) => !nPath.startsWith(path.resolve(rPath, v)))
             ) {
                 return false;
             }
@@ -158,6 +156,17 @@ const dgit = async (
                 totalCount: totalStatus.count,
             });
 
+        logger(' include files resolved.');
+        logger(
+            '',
+            JSON.stringify({
+                currentSize,
+                currentCount,
+                totalSize: totalStatus.size,
+                totalCount: totalStatus.count,
+            }),
+        );
+
         async.eachLimit(
             includeTreeNodeList,
             parallelLimit,
@@ -175,7 +184,7 @@ const dgit = async (
                     targetPath = tPath.replace(rPath, root);
                 }
 
-                logger(node.path, relativePath, targetPath);
+                logger('', node.path, relativePath, targetPath);
 
                 if (!fs.existsSync(path.dirname(targetPath))) {
                     MakeDirs(path.dirname(targetPath));
@@ -183,12 +192,14 @@ const dgit = async (
 
                 const ws = fs.createWriteStream(targetPath);
 
+                logger(` downloading from ${downloadUrl}...`);
+
                 requestOnStream(downloadUrl, ws, dgitOptions || {}, {
                     onSuccess() {
                         currentCount++;
                         currentSize += node.size;
 
-                        logger(`write file ${node.path} succeed. 
+                        logger(` write file ${node.path} succeed. 
                             size: [${currentSize}/${totalStatus.size}], 
                             count: [${currentCount}/${totalStatus.count}]`);
 
@@ -215,11 +226,20 @@ const dgit = async (
                             callback();
                         }
                     },
+                    onError(err) {
+                        logger('', err);
+                        callback(new Error(` request ${downloadUrl} failed.`));
+                    },
                     onRetry() {
-                        logger(` request ${url} failed. Retrying...`);
+                        logger(` request ${downloadUrl} failed. Retrying...`);
                         onRetry && onRetry();
                     },
                 });
+            },
+            (err) => {
+                if (err) {
+                    onErrorReject(err);
+                }
             },
         );
     } catch (error) {

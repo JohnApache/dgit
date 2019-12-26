@@ -80,3 +80,10 @@ export const MakeDirs = (dirs: string): void => {
     if (fs.existsSync(dirs)) return;
     mkdirs(dirs);
 };
+
+export const AddExtraRandomQs = (origin: string): string => {
+    if (origin.indexOf('?') !== -1) {
+        return `${origin}&_t=${Math.random()}`;
+    }
+    return `${origin}?_t=${Math.random()}`;
+};

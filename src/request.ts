@@ -1,5 +1,8 @@
+import fs from 'fs';
 import request, { UrlOptions, CoreOptions } from 'request';
 import { DgitGlobalOption, DgitLifeCycle } from './type';
+import { AddExtraRandomQs } from './cmd/utils';
+import { createLogger } from './log';
 
 type RequestOption = UrlOptions & CoreOptions;
 
@@ -19,8 +22,10 @@ const requestGet = (
                 onFinish && onFinish();
                 return;
             }
-            onRetry && onRetry();
-            requestGet(options, maxRetryCount - 1, hooks);
+            setTimeout(() => {
+                onRetry && onRetry();
+                requestGet(options, maxRetryCount - 1, hooks);
+            }, 1500);
             return;
         }
 
@@ -58,34 +63,44 @@ export const requestGetPromise = (
 
 export const requestOnStream = (
     url: string,
-    ws: NodeJS.WritableStream,
+    ws: fs.WriteStream,
     dgitOptions: DgitGlobalOption,
     hooks?: DgitLifeCycle,
 ) => {
     const { maxRetryCount = 5 } = dgitOptions;
+
+    const logger = createLogger(dgitOptions);
 
     const {
         onSuccess, onError, onFinish, onRetry,
     } = hooks || {};
 
     const fn = (retryCount: number): void => {
-        request(encodeURI(url))
+        const downloadUrl = AddExtraRandomQs(url);
+        logger(` dowloading from ${downloadUrl}...`);
+
+        request(encodeURI(downloadUrl))
             .on('error', (err) => {
                 if (retryCount <= 0) {
                     onError && onError(err);
+                    onFinish && onFinish();
                     return;
                 }
-                onRetry && onRetry();
-                fn(retryCount - 1);
-            })
-            .on('close', () => {
-                onFinish && onFinish();
+                setTimeout(() => {
+                    onRetry && onRetry();
+                    fn(retryCount - 1);
+                }, 1500);
             })
             .pipe(ws);
     };
 
     ws.on('finish', () => {
         onSuccess && onSuccess();
+        onFinish && onFinish();
+    });
+
+    ws.on('error', () => {
+        logger(` ${url}, write stream failed.`);
     });
 
     fn(maxRetryCount);
