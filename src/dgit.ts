@@ -11,13 +11,18 @@ import {
     DgitLifeCycle,
     DgitLoadGitTree,
 } from './type';
-import { ParseGithubHttpsLink, isHttpsLink, MakeDirs } from './cmd/utils';
+import {
+    ParseGithubHttpsLink, isHttpsLink, MakeDirs,
+} from './cmd/utils';
 
 const UserAgent = '@dking/dgit';
+const DEFAULT_PARALLEL_LIMIT = 10;
+const MAX_PARALLEL_LIMIT = 100;
+const JSON_STRINGIFY_PADDING = 2;
 
 const dgit = async (
     repoOption: RepoOptionType,
-    destPath: string,
+    dPath: string,
     dgitOptions?: DgitGlobalOption,
     hooks?: DgitLifeCycle & DgitLoadGitTree,
 ): Promise<void> => {
@@ -43,15 +48,15 @@ const dgit = async (
 
     const logger = createLogger(dgitOptions);
 
-    const { exclude = [], include = [] } = dgitOptions || {};
+    const { exclude = [], include = []} = dgitOptions || {};
 
-    let { parallelLimit = 10 } = dgitOptions || {};
+    let { parallelLimit = DEFAULT_PARALLEL_LIMIT } = dgitOptions || {};
     if (!parallelLimit || parallelLimit <= 0) {
         logger('parallelLimit value is invalid.');
-        parallelLimit = 10;
+        parallelLimit = DEFAULT_PARALLEL_LIMIT;
     }
 
-    parallelLimit > 100 && (parallelLimit = 100);
+    parallelLimit > MAX_PARALLEL_LIMIT && (parallelLimit = MAX_PARALLEL_LIMIT);
 
     const {
         onSuccess,
@@ -64,8 +69,8 @@ const dgit = async (
         afterLoadTree,
     } = hooks || {};
 
-    let onSuccessResolve: (data?: any) => void = () => {};
-    let onErrorReject: (err?: any) => void = () => {};
+    let onSuccessResolve: (data?: any)=> void = () => {};
+    let onErrorReject: (err?: any)=> void = () => {};
 
     const prom: Promise<void> = new Promise((resolve, reject) => {
         onSuccessResolve = resolve;
@@ -76,32 +81,33 @@ const dgit = async (
     const url = getRepoTreeUrl();
 
     const headers = {
-        'User-Agent': UserAgent,
-        Authorization: token ? `token ${token}` : undefined,
+        'User-Agent' : UserAgent,
+        Authorization: token ? `token ${ token }` : undefined,
     };
 
-    const auth = username && password
-        ? {
-            user: username,
-            pass: password,
+    const auth = username && password ?
+        {
+            user           : username,
+            pass           : password,
             sendImmediately: true,
-        }
-        : undefined;
+        } :
+        undefined;
 
-    const options = { url, headers, auth };
-    destPath = path.isAbsolute(destPath)
-        ? destPath
-        : path.resolve(process.cwd(), destPath);
+    const options = {
+        url, headers, auth,
+    };
+
+    const destPath = path.isAbsolute(dPath) ? dPath : path.resolve(process.cwd(), dPath);
 
     logger(' request repo tree options.');
-    logger(JSON.stringify(options, null, 2));
+    logger(JSON.stringify(options, null, JSON_STRINGIFY_PADDING));
 
     try {
         logger(' loading remote repo tree...');
         beforeLoadTree && beforeLoadTree();
         const body = await requestGetPromise(options, dgitOptions || {}, {
-            onRetry() {
-                logger(` request ${url} failed. Retrying...`);
+            onRetry () {
+                logger(` request ${ url } failed. Retrying...`);
                 onRetry && onRetry();
             },
         });
@@ -115,15 +121,15 @@ const dgit = async (
         }
 
         const treeNodeList: RepoTreeNode[] = result.tree;
-        const includeTreeNodeList = treeNodeList.filter((node) => {
+        const includeTreeNodeList = treeNodeList.filter(node => {
             const nPath = path.resolve(__dirname, node.path);
             const rPath = path.resolve(__dirname, relativePath);
             if (!nPath.startsWith(rPath) || node.type !== 'blob') {
                 return false;
             }
             if (
-                exclude.some((v) => nPath.startsWith(path.resolve(rPath, v)))
-                && include.every((v) => !nPath.startsWith(path.resolve(rPath, v)))
+                exclude.some(v => nPath.startsWith(path.resolve(rPath, v))) &&
+                include.every(v => !nPath.startsWith(path.resolve(rPath, v)))
             ) {
                 return false;
             }
@@ -131,7 +137,7 @@ const dgit = async (
         });
 
         if (includeTreeNodeList.length <= 0) {
-            throw new Error(`404 repo ${relativePath} not found!`);
+            throw new Error(`404 repo ${ relativePath } not found!`);
         }
 
         const totalStatus = includeTreeNodeList.reduce(
@@ -148,11 +154,11 @@ const dgit = async (
         let currentSize = 0;
         let currentCount = 0;
 
-        onResolved
-            && onResolved({
+        onResolved &&
+            onResolved({
                 currentSize,
                 currentCount,
-                totalSize: totalStatus.size,
+                totalSize : totalStatus.size,
                 totalCount: totalStatus.count,
             });
 
@@ -162,7 +168,7 @@ const dgit = async (
             JSON.stringify({
                 currentSize,
                 currentCount,
-                totalSize: totalStatus.size,
+                totalSize : totalStatus.size,
                 totalCount: totalStatus.count,
             }),
         );
@@ -192,22 +198,22 @@ const dgit = async (
 
                 const ws = fs.createWriteStream(targetPath);
 
-                logger(` downloading from ${downloadUrl}...`);
+                logger(` downloading from ${ downloadUrl }...`);
 
                 requestOnStream(downloadUrl, ws, dgitOptions || {}, {
-                    onSuccess() {
+                    onSuccess () {
                         currentCount++;
                         currentSize += node.size;
 
-                        logger(` write file ${node.path} succeed. 
-                            size: [${currentSize}/${totalStatus.size}], 
-                            count: [${currentCount}/${totalStatus.count}]`);
+                        logger(` write file ${ node.path } succeed. 
+                            size: [${ currentSize }/${ totalStatus.size }], 
+                            count: [${ currentCount }/${ totalStatus.count }]`);
 
-                        onProgress
-                            && onProgress(
+                        onProgress &&
+                            onProgress(
                                 {
                                     totalCount: totalStatus.count,
-                                    totalSize: totalStatus.size,
+                                    totalSize : totalStatus.size,
                                     currentSize,
                                     currentCount,
                                 },
@@ -215,8 +221,8 @@ const dgit = async (
                             );
 
                         if (
-                            currentCount === totalStatus.count
-                            && currentSize === totalStatus.size
+                            currentCount === totalStatus.count &&
+                            currentSize === totalStatus.size
                         ) {
                             onSuccess && onSuccess();
                             onFinish && onFinish();
@@ -226,17 +232,17 @@ const dgit = async (
                             callback();
                         }
                     },
-                    onError(err) {
+                    onError (err) {
                         logger('', err);
-                        callback(new Error(` request ${downloadUrl} failed.`));
+                        callback(new Error(` request ${ downloadUrl } failed.`));
                     },
-                    onRetry() {
-                        logger(` request ${downloadUrl} failed. Retrying...`);
+                    onRetry () {
+                        logger(` request ${ downloadUrl } failed. Retrying...`);
                         onRetry && onRetry();
                     },
                 });
             },
-            (err) => {
+            err => {
                 if (err) {
                     onErrorReject(err);
                 }

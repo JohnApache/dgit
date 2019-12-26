@@ -1,10 +1,13 @@
 import fs from 'fs';
-import request, { UrlOptions, CoreOptions } from 'request';
 import { DgitGlobalOption, DgitLifeCycle } from './type';
 import { AddExtraRandomQs } from './cmd/utils';
 import { createLogger } from './log';
+import request, { UrlOptions, CoreOptions } from 'request';
 
 type RequestOption = UrlOptions & CoreOptions;
+
+const REQUEST_RETRY_DELAY = 1500;
+const DEFAULT_MAX_RETRY_COUNT = 5;
 
 const requestGet = (
     options: RequestOption,
@@ -25,7 +28,7 @@ const requestGet = (
             setTimeout(() => {
                 onRetry && onRetry();
                 requestGet(options, maxRetryCount - 1, hooks);
-            }, 1500);
+            }, REQUEST_RETRY_DELAY);
             return;
         }
 
@@ -39,18 +42,18 @@ export const requestGetPromise = (
     dgitOptions: DgitGlobalOption,
     hooks?: DgitLifeCycle,
 ): Promise<any> => new Promise((resolve, reject) => {
-    const { maxRetryCount = 5 } = dgitOptions;
+    const { maxRetryCount = DEFAULT_MAX_RETRY_COUNT } = dgitOptions;
 
     const {
         onSuccess, onError, onFinish, onRetry,
     } = hooks || {};
 
     const newHooks: DgitLifeCycle = {
-        onSuccess(data: any) {
+        onSuccess (data: any) {
             resolve(data);
             onSuccess && onSuccess(data);
         },
-        onError(err: any) {
+        onError (err: any) {
             reject(err);
             onError && onError(err);
         },
@@ -67,7 +70,7 @@ export const requestOnStream = (
     dgitOptions: DgitGlobalOption,
     hooks?: DgitLifeCycle,
 ) => {
-    const { maxRetryCount = 5 } = dgitOptions;
+    const { maxRetryCount = DEFAULT_MAX_RETRY_COUNT } = dgitOptions;
 
     const logger = createLogger(dgitOptions);
 
@@ -77,10 +80,10 @@ export const requestOnStream = (
 
     const fn = (retryCount: number): void => {
         const downloadUrl = AddExtraRandomQs(url);
-        logger(` dowloading from ${downloadUrl}...`);
+        logger(` dowloading from ${ downloadUrl }...`);
 
         request(encodeURI(downloadUrl))
-            .on('error', (err) => {
+            .on('error', err => {
                 if (retryCount <= 0) {
                     onError && onError(err);
                     onFinish && onFinish();
@@ -89,7 +92,7 @@ export const requestOnStream = (
                 setTimeout(() => {
                     onRetry && onRetry();
                     fn(retryCount - 1);
-                }, 1500);
+                }, REQUEST_RETRY_DELAY);
             })
             .pipe(ws);
     };
@@ -100,7 +103,7 @@ export const requestOnStream = (
     });
 
     ws.on('error', () => {
-        logger(` ${url}, write stream failed.`);
+        logger(` ${ url }, write stream failed.`);
     });
 
     fn(maxRetryCount);

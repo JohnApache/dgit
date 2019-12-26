@@ -31,17 +31,17 @@ export interface RepoTreeNode {
 }
 
 export interface DgitLifeCycle {
-    onSuccess?: (data?: any) => void;
-    onError?: (err?: any) => void;
-    onFinish?: () => void;
-    onRetry?: () => void;
-    onProgress?: (status: ProgressStatus, node: RepoTreeNode) => void;
-    onResolved?: (status: ProgressStatus) => void;
+    onSuccess?: (data?: any)=> void;
+    onError?: (err?: any)=> void;
+    onFinish?: ()=> void;
+    onRetry?: ()=> void;
+    onProgress?: (status: ProgressStatus, node: RepoTreeNode)=> void;
+    onResolved?: (status: ProgressStatus)=> void;
 }
 
 export interface DgitLoadGitTree {
-    beforeLoadTree?: () => void;
-    afterLoadTree?: () => void;
+    beforeLoadTree?: ()=> void;
+    afterLoadTree?: ()=> void;
 }
 
 export interface ProgressStatus {

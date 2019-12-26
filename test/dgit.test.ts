@@ -1,19 +1,19 @@
-import { expect } from 'chai';
 import fs from 'fs';
 import path from 'path';
+import dgit from '../src/dgit';
 import {
     after, describe, it, before,
 } from 'mocha';
-import dgit from '../src/dgit';
+import { expect } from 'chai';
 
 const Clean = (targets: Array<string>, callback: Function) => {
-    targets.forEach((deletePath) => {
+    targets.forEach(deletePath => {
         const stat = fs.statSync(deletePath);
         if (stat.isFile()) {
             return fs.unlinkSync(deletePath);
         }
         if (stat.isDirectory()) {
-            const nextTargets = fs.readdirSync(deletePath).map((fileName) => `${deletePath}/${fileName}`);
+            const nextTargets = fs.readdirSync(deletePath).map(fileName => `${ deletePath }/${ fileName }`);
             Clean(nextTargets, () => {
                 fs.rmdirSync(deletePath);
             });
@@ -33,9 +33,9 @@ describe('dgit功能测试', () => {
     const target6 = path.resolve(basePath, './cmd/main.ts');
     const target7 = path.resolve(basePath, './cmd/action.ts');
 
-    const deleteTarget = (): Promise<void> => new Promise((resolve) => {
+    const deleteTarget = (): Promise<void> => new Promise(resolve => {
         if (fs.existsSync(basePath)) {
-            return Clean([basePath], resolve);
+            return Clean([ basePath ], resolve);
         }
         resolve();
     });
@@ -46,18 +46,16 @@ describe('dgit功能测试', () => {
     it('dgit 能拉取远端git指定目录代码', async () => {
         await dgit(
             {
-                owner: 'JohnApache',
-                repoName: 'hasaki-cli',
-                ref: 'master',
+                owner       : 'JohnApache',
+                repoName    : 'hasaki-cli',
+                ref         : 'master',
                 relativePath: './PLAN.txt',
             },
             './testDir',
+            { log: true },
             {
-                log: true,
-            },
-            {
-                onSuccess() {
-                    expect(fs.existsSync(target)).to.be.ok;
+                onSuccess () {
+                    expect(fs.existsSync(target)).to.be.equal(true);
                 },
             },
         );
@@ -65,17 +63,15 @@ describe('dgit功能测试', () => {
 
     it('dgit 能直接使用githubLink方式拉取远端git指定目录代码', async () => {
         await dgit(
-            {
-                githubLink: 'https://github.com/JohnApache/hasaki-cli/blob/master/PLAN.txt',
-            },
+            { githubLink: 'https://github.com/JohnApache/hasaki-cli/blob/master/PLAN.txt' },
             './testDir',
             {
-                log: true,
+                log          : true,
                 parallelLimit: 1,
             },
             {
-                onSuccess() {
-                    expect(fs.existsSync(target)).to.be.ok;
+                onSuccess () {
+                    expect(fs.existsSync(target)).to.be.equal(true);
                 },
             },
         );
@@ -83,17 +79,15 @@ describe('dgit功能测试', () => {
 
     it('dgit 能直接使用githubLink方式拉取远端git指定深层指定文件代码', async () => {
         await dgit(
-            {
-                githubLink: 'https://github.com/JohnApache/hasaki-cli/blob/master/assets/.eslintignore',
-            },
+            { githubLink: 'https://github.com/JohnApache/hasaki-cli/blob/master/assets/.eslintignore' },
             './testDir',
             {
-                log: true,
+                log          : true,
                 parallelLimit: 1,
             },
             {
-                onSuccess() {
-                    expect(fs.existsSync(target2)).to.be.ok;
+                onSuccess () {
+                    expect(fs.existsSync(target2)).to.be.equal(true);
                 },
             },
         );
@@ -101,18 +95,16 @@ describe('dgit功能测试', () => {
 
     it('dgit 能直接使用githubLink方式拉取远端git指定深层指定目录代码', async () => {
         await dgit(
-            {
-                githubLink: 'https://github.com/JohnApache/hasaki-cli/tree/master/assets/webpack',
-            },
+            { githubLink: 'https://github.com/JohnApache/hasaki-cli/tree/master/assets/webpack' },
             './testDir',
             {
-                log: true,
+                log          : true,
                 parallelLimit: 2,
             },
             {
-                onSuccess() {
-                    expect(fs.existsSync(target3)).to.be.ok;
-                    expect(fs.existsSync(target4)).to.be.ok;
+                onSuccess () {
+                    expect(fs.existsSync(target3)).to.be.equal(true);
+                    expect(fs.existsSync(target4)).to.be.equal(true);
                 },
             },
         );
@@ -120,25 +112,19 @@ describe('dgit功能测试', () => {
 
     it('dgit 能接受exclude include 参数筛选目标目录文件', async () => {
         await dgit(
-            {
-                githubLink: 'https://github.com/JohnApache/dgit/tree/master/src',
-            },
+            { githubLink: 'https://github.com/JohnApache/dgit/tree/master/src' },
             './testDir',
             {
-                log: true,
+                log          : true,
                 parallelLimit: 2,
-                exclude: [
-                    'cmd',
-                ],
-                include: [
-                    'cmd/main.ts',
-                ],
+                exclude      : [ 'cmd' ],
+                include      : [ 'cmd/main.ts' ],
             },
             {
-                onSuccess() {
-                    expect(fs.existsSync(target5)).to.be.ok;
-                    expect(fs.existsSync(target6)).to.be.ok;
-                    expect(fs.existsSync(target7)).to.not.be.ok;
+                onSuccess () {
+                    expect(fs.existsSync(target5)).to.be.equal(true);
+                    expect(fs.existsSync(target6)).to.be.equal(true);
+                    expect(fs.existsSync(target7)).to.be.equal(false);
                 },
             },
         );

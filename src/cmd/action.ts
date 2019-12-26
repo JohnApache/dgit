@@ -1,11 +1,15 @@
 import { Command } from 'commander';
-import ProgressBar from 'progress';
 import ora, { Ora } from 'ora';
-import { ParseGithubHttpsLink, TextEllipsis, isHttpsLink } from './utils';
+import dgit from '../dgit';
+import {
+    ParseGithubHttpsLink, TextEllipsis, isHttpsLink,
+} from './utils';
 import { CommandInfo } from './type';
 
 import { DownloadPrompt, PasswordPrompt } from './prompt';
-import dgit from '../dgit';
+import ProgressBar from 'progress';
+
+const MAX_TEXT_ELLIPSIS = 30;
 
 const DownloadAction = async (
     githubLink: string | undefined,
@@ -27,7 +31,9 @@ const DownloadAction = async (
         logPrefix = '[dgit-logger]',
     } = cmd;
 
-    const { parallelLimit = '', username, token } = cmd;
+    const {
+        parallelLimit = '', username, token,
+    } = cmd;
 
     if (githubLink && isHttpsLink(githubLink)) {
         const parseResult = ParseGithubHttpsLink(githubLink);
@@ -78,36 +84,35 @@ const DownloadAction = async (
                 log,
                 logPrefix,
                 parallelLimit: Number(parallelLimit.trim()),
-                exclude: excludeList,
-                include: includeList,
+                exclude      : excludeList,
+                include      : includeList,
             },
             {
-                beforeLoadTree() {
+                beforeLoadTree () {
                     spinner.start();
                 },
-                afterLoadTree() {
+                afterLoadTree () {
                     spinner.succeed(' load remote repo tree succeed! ');
                 },
-                onResolved(status) {
+                onResolved (status) {
                     if (log) return;
                     const green = '\u001b[42m \u001b[0m';
                     const red = '\u001b[41m \u001b[0m';
+                    const index = 0;
                     bar = new ProgressBar(
                         ' DOWNLOAD |:bar| :current/:total :percent elapsed: :elapseds eta: :eta :file, done.',
                         {
-                            total: status.totalCount,
-                            width: 50,
-                            complete: green,
+                            total     : status.totalCount,
+                            width     : 50,
+                            complete  : green,
                             incomplete: red,
                         },
                     );
-                    bar.update(0);
+                    bar.update(index);
                 },
-                onProgress(_, node) {
+                onProgress (_, node) {
                     if (log) return;
-                    bar.tick({
-                        file: TextEllipsis(node.path, 30),
-                    });
+                    bar.tick({ file: TextEllipsis(node.path, MAX_TEXT_ELLIPSIS) });
                 },
             },
         );

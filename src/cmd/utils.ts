@@ -3,9 +3,7 @@ import path from 'path';
 import { PackageInfo, GithubLinkInfo } from './type';
 
 export const GetPackageInfo = (): PackageInfo => {
-    const buffer = fs.readFileSync(
-        path.resolve(__dirname, '../../package.json'),
-    );
+    const buffer = fs.readFileSync(path.resolve(__dirname, '../../package.json'));
     return JSON.parse(buffer.toString());
 };
 
@@ -26,9 +24,9 @@ export const ParseGithubHttpsLink = (httpsLink: string): GithubLinkInfo => {
         return {
             owner,
             repoName,
-            ref: 'master',
+            ref         : 'master',
             relativePath: '',
-            type: 'tree',
+            type        : 'tree',
         };
     }
     repoName = nextLink.slice(0, index);
@@ -39,7 +37,8 @@ export const ParseGithubHttpsLink = (httpsLink: string): GithubLinkInfo => {
     let type = 'tree';
     if (index === -1) {
         if (repoName.endsWith('.git')) {
-            repoName = repoName.slice(0, -4);
+            const lastIndex = -4;
+            repoName = repoName.slice(0, lastIndex);
         }
     } else {
         type = nextLink.slice(0, index);
@@ -62,10 +61,10 @@ export const ParseGithubHttpsLink = (httpsLink: string): GithubLinkInfo => {
     };
 };
 
-export const TextEllipsis = (text: string, maxLen: number): string => (text.length >= maxLen ? `${text.slice(0, maxLen)}...` : text);
+export const TextEllipsis = (text: string, maxLen: number): string => (text.length >= maxLen ? `${ text.slice(0, maxLen) }...` : text);
 
 export const MakeDirs = (dirs: string): void => {
-    const mkdirs = (dir: string, callback?: () => void) => {
+    const mkdirs = (dir: string, callback?: ()=> void) => {
         if (fs.existsSync(dir)) {
             callback && callback();
             return;
@@ -83,7 +82,7 @@ export const MakeDirs = (dirs: string): void => {
 
 export const AddExtraRandomQs = (origin: string): string => {
     if (origin.indexOf('?') !== -1) {
-        return `${origin}&_t=${Math.random()}`;
+        return `${ origin }&_t=${ Math.random() }`;
     }
-    return `${origin}?_t=${Math.random()}`;
+    return `${ origin }?_t=${ Math.random() }`;
 };

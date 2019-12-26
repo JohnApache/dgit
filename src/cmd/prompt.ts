@@ -1,5 +1,5 @@
-import inquirer, { Question } from 'inquirer';
 import { DownloadPromptInfo, PasswordPromptInfo } from './type';
+import inquirer, { Question } from 'inquirer';
 
 export const CreatePrompt = (questions: Array<Question>): Promise<any> => inquirer.prompt(questions);
 
@@ -7,21 +7,21 @@ export const DownloadPrompt = async (
     currentInfo: DownloadPromptInfo,
 ): Promise<DownloadPromptInfo> => {
     if (
-        currentInfo.owner
-        && currentInfo.repoName
-        && currentInfo.ref
-        && currentInfo.relativePath
-        && currentInfo.dest
+        currentInfo.owner &&
+        currentInfo.repoName &&
+        currentInfo.ref &&
+        currentInfo.relativePath &&
+        currentInfo.dest
     ) return currentInfo;
 
     const questions = [
         {
             type: 'input',
             name: 'owner',
-            when() {
+            when () {
                 return !currentInfo.owner;
             },
-            validate(input: string) {
+            validate (input: string) {
                 return input && input.length > 0;
             },
             message: 'input github ownername.',
@@ -29,10 +29,10 @@ export const DownloadPrompt = async (
         {
             type: 'input',
             name: 'repoName',
-            when() {
+            when () {
                 return !currentInfo.repoName;
             },
-            validate(input: string) {
+            validate (input: string) {
                 return input && input.length > 0;
             },
             message: 'input github repoName.',
@@ -40,48 +40,48 @@ export const DownloadPrompt = async (
         {
             type: 'input',
             name: 'ref',
-            when() {
+            when () {
                 return !currentInfo.ref;
             },
-            validate(input: string) {
+            validate (input: string) {
                 return input && input.length > 0;
             },
-            default: 'master',
-            message: 'input github branch or commit hash or tagname.',
+            'default': 'master',
+            message  : 'input github branch or commit hash or tagname.',
         },
         {
             type: 'input',
             name: 'relativePath',
-            when() {
+            when () {
                 return !currentInfo.relativePath;
             },
-            validate(input: string) {
+            validate (input: string) {
                 return input && input.length > 0;
             },
-            default: '.',
-            message: 'input github relative path.',
+            'default': '.',
+            message  : 'input github relative path.',
         },
         {
             type: 'input',
             name: 'dest',
-            when() {
+            when () {
                 return !currentInfo.dest;
             },
-            validate(input: string) {
+            validate (input: string) {
                 return input && input.length > 0;
             },
-            default: '.',
-            message: 'input template output dest path.',
+            'default': '.',
+            message  : 'input template output dest path.',
         },
     ];
 
     const answer = await CreatePrompt(questions);
     return {
-        owner: answer.owner || currentInfo.owner,
-        dest: answer.dest || currentInfo.dest,
-        repoName: answer.repoName || currentInfo.repoName,
+        owner       : answer.owner || currentInfo.owner,
+        dest        : answer.dest || currentInfo.dest,
+        repoName    : answer.repoName || currentInfo.repoName,
         relativePath: answer.relativePath || currentInfo.relativePath,
-        ref: answer.ref || currentInfo.ref,
+        ref         : answer.ref || currentInfo.ref,
     };
 };
 
@@ -89,10 +89,10 @@ export const PasswordPrompt = (): Promise<PasswordPromptInfo> => {
     const question = {
         type: 'password',
         name: 'password',
-        validate(input: string) {
+        validate (input: string) {
             return input && input.length > 0;
         },
         message: 'input github account password.',
     };
-    return CreatePrompt([question]);
+    return CreatePrompt([ question ]);
 };

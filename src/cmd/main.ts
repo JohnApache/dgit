@@ -5,12 +5,14 @@ import { PackageInfo } from './type';
 import { GetPackageInfo } from './utils';
 import DownloadAction from './action';
 
+const EXIT_CODE = 1;
+
 const Exit = (): void => {
-    process.exit(1);
+    process.exit(EXIT_CODE);
 };
 
 const UnknownCommand = (cmdName: string): void => {
-    console.log(`${chalk.red('Unknown command')} ${chalk.yellow(cmdName)}.`);
+    console.log(`${ chalk.red('Unknown command') } ${ chalk.yellow(cmdName) }.`);
 };
 
 const packageInfo: PackageInfo = GetPackageInfo();
@@ -48,13 +50,11 @@ program
     .option('--log', 'output dgit internal log details.')
     .option('--log-prefix, <log>', 'dgit internal log prefix.')
     .alias('d')
-    .description(
-        'download the file with the specified path of the remote repo.',
-    )
+    .description('download the file with the specified path of the remote repo.')
     .action(DownloadAction);
 
 program.on('command:*', (cmdObj = []) => {
-    const [cmd] = cmdObj;
+    const [ cmd ] = cmdObj;
     if (cmd) {
         program.outputHelp();
         UnknownCommand(cmd);

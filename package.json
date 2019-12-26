@@ -24,7 +24,7 @@
   },
   "lint-staged": {
     "**/*.{jsx,js}": [
-      "prettier-eslint --write",
+      "npm run lint",
       "git add"
     ]
   },
@@ -33,34 +33,25 @@
       "pre-commit": "lint-staged"
     }
   },
-  "prettier": {
-    "printWidth": 80,
-    "tabWidth": 4,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5",
-    "proseWrap": "preserve"
-  },
   "devDependencies": {
+    "@dking/eslint-config-typescript": "^0.0.4",
     "@types/chai": "^4.2.0",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.5",
-    "@typescript-eslint/eslint-plugin": "^2.6.0",
-    "@typescript-eslint/parser": "^2.6.0",
+    "@typescript-eslint/eslint-plugin": "^2.13.0",
+    "@typescript-eslint/parser": "^2.13.0",
     "chai": "^4.2.0",
-    "eslint": "6.6.0",
-    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint": "^6.8.0",
     "eslint-import-resolver-typescript": "^2.0.0",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-promise": "^4.1.1",
     "husky": "^2.3.0",
     "lint-staged": "^8.1.7",
     "mocha": "^6.2.0",
     "mochawesome": "^4.1.0",
     "nyc": "^14.1.1",
-    "prettier-eslint-cli": "^4.7.1",
     "ts-node": "^8.3.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.7.4"
   },
   "dependencies": {
     "@types/async": "^3.0.3",
