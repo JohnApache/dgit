@@ -15,7 +15,6 @@
   "license": "MIT",
   "scripts": {
     "build:ts": "tsc --build",
-    "format": "prettier-eslint 'src/**/*.{js,jsx,ts,tsx}' --write",
     "lint": "eslint src --ext .jsx --ext .js --ext .tsx --ext .ts --cache --fix",
     "test:mocha": "nyc --reporter=text mocha --require ts-node/register 'test/**/*.{ts,tsx}' -t 60000",
     "test:mocha:reporter": "nyc --reporter=lcov --reporter=text mocha --require ts-node/register 'test/**/*.{ts,tsx}' -t 60000 --reporter=mochawesome",
