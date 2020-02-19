@@ -1,6 +1,6 @@
 {
   "name": "@dking/dgit",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "@dking/hasaki-cli init application",
   "bin": {
     "dgit": "./bin/cmd.js"
