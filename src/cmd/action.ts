@@ -119,6 +119,7 @@ const DownloadAction = async (
         spinner.succeed(' download all files succeed!');
     } catch (error) {
         console.error(error);
+        spinner.fail(' download files failed!');
     }
 };
 

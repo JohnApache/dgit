@@ -243,9 +243,7 @@ const dgit = async (
                 });
             },
             err => {
-                if (err) {
-                    onErrorReject(err);
-                }
+                onErrorReject(err);
             },
         );
     } catch (error) {
