@@ -139,7 +139,7 @@ import dgit from '@dking/dgit';
     })()
     ```    
 ## 注意
-在下载私有仓库的时候需要提供下载权限，此时需要传入额外的参数，方式有两种
+1. 在下载私有仓库的时候需要提供下载权限，此时需要传入额外的参数，方式有两种
 + Basic authentication 
 
     通过传入 用户名 和 密码，来提供下载权限, 当传入用户名，可以不显式提供密码，在没有提供密码时，会单独出现密码提示
@@ -155,6 +155,20 @@ import dgit from '@dking/dgit';
 
     ```bash
     $ dgit d https://github.com/JohnApache/hasaki-cli/tree/master/src -d ./abc -t OAUTH-TOKEN
+    ```
+
+2. 下载资源失败 `raw.githubusercontent.com` 连接失败  
+    由于国内访问 `raw.githubusercontent.com` 地址，除了墙以外，大多数还有一种情况就是域名 `dns污染` ，需要查询正确的 ip 地址 
+    - **【查询方案1】**：打开 `https://www.ipaddress.com/` 输入访问不了的域名，查询之后可以获得正确的 IP 地址， 
+
+    > Tips: 可能该 ip 因为墙的问题还是访问不了，可以使用下面的方案
+    - **【查询方案2】**：打开 `https://site.ip138.com/raw.githubusercontent.com/` ，可以查询到对应国内中国香港的 IP 地址
+
+    在本机的 `host` 文件中添加映射，建议使用 [switchhosts](https://github.com/oldj/SwitchHosts/releases) 方便 `host` 管理,在 `host`文件中追加记录，如下选取其中一个即可，国内建议用第二个
+
+    ```ini
+    199.232.68.133 raw.githubusercontent.com # 美国
+    151.101.76.133 raw.githubusercontent.com # 中国香港
     ```
 
 ## 建议
