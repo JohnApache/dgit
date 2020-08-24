@@ -220,17 +220,7 @@ const dgit = async (
                                 node,
                             );
 
-                        if (
-                            currentCount === totalStatus.count &&
-                            currentSize === totalStatus.size
-                        ) {
-                            onSuccess && onSuccess();
-                            onFinish && onFinish();
-                            callback();
-                            onSuccessResolve();
-                        } else {
-                            callback();
-                        }
+                        callback();
                     },
                     onError (err) {
                         logger('', err);
@@ -243,7 +233,15 @@ const dgit = async (
                 });
             },
             err => {
-                onErrorReject(err);
+                if (err) {
+                    onError && onError(err);
+                    onFinish && onFinish();
+                    onErrorReject(err);
+                } else {
+                    onSuccess && onSuccess();
+                    onFinish && onFinish();
+                    onSuccessResolve();
+                }
             },
         );
     } catch (error) {
